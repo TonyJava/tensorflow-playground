@@ -12,4 +12,12 @@ public class Image {
     this.size = size;
     this.data = data;
   }
+
+  public float[] asFloatArray() {
+    float[] result = new float[data.length];
+    for (int i = 0; i < data.length; i++) {
+      result[i] = data[i] / 255.0f;
+    }
+    return result;
+  }
 }
