@@ -35,6 +35,10 @@ public abstract class GraphTask implements AutoCloseable {
     return session;
   }
 
+  public Shape shape(long firstDimensionSize, long... otherDimensionSizes) {
+    return Shape.make(firstDimensionSize, otherDimensionSizes);
+  }
+
   public Tensor tensor(Object object) {
     Tensor tensor = Tensor.create(object);
     closeables.add(tensor);
