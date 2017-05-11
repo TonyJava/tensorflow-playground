@@ -36,6 +36,10 @@ public abstract class GraphTask implements AutoCloseable {
     return session;
   }
 
+  public List<Tensor> run(Output output) {
+    return session().runner().fetch(output).run();
+  }
+
   public Shape shape(long firstDimensionSize, long... otherDimensionSizes) {
     return Shape.make(firstDimensionSize, otherDimensionSizes);
   }
