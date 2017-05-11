@@ -61,6 +61,10 @@ public abstract class GraphTask implements AutoCloseable {
     return unaryOp("Square", value);
   }
 
+  public Output matMul(Output value1, Output value2) {
+    return binaryOp("MatMul", value1, value2);
+  }
+
   public Output softmax(Output value) {
     return unaryOp("Softmax", value);
   }
