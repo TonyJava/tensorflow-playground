@@ -1,5 +1,6 @@
 package tensorflow;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,13 +101,17 @@ public abstract class GraphTask implements AutoCloseable {
 
   public Output constant(String name, Object value) {
     try (Tensor tensor = Tensor.create(value)) {
-      return graph
-          .opBuilder("Const", name)
-          .setAttr("dtype", tensor.dataType())
-          .setAttr("value", tensor)
-          .build()
-          .output(0);
+      return constant(name, tensor);
     }
+  }
+
+  private Output constant(String name, Tensor tensor) {
+    return graph
+        .opBuilder("Const", name)
+        .setAttr("dtype", tensor.dataType())
+        .setAttr("value", tensor)
+        .build()
+        .output(0);
   }
 
   public Output placeholder(String name, DataType type) {
@@ -124,6 +129,20 @@ public abstract class GraphTask implements AutoCloseable {
         .setAttr("shape", shape)
         .build()
         .output(0);
+  }
+
+  public Output assignZeros(Output variable) {
+    Object zeros = Array.newInstance(Float.TYPE, shapeSizes(variable.shape()));
+    Output value = constant("initialize/" + variable.op().name(), zeros);
+    return assign(variable, value);
+  }
+
+  private int[] shapeSizes(Shape shape) {
+    int[] result = new int[shape.numDimensions()];
+    for (int i = 0; i < result.length; i++) {
+      result[i] = (int) shape.size(i);
+    }
+    return result;
   }
 
   public Output assign(Output variable, Output value) {
