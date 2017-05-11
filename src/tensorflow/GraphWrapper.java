@@ -42,6 +42,10 @@ public class GraphWrapper implements AutoCloseable {
     return unaryOp("Square", value);
   }
 
+  public Output softmax(Output value) {
+    return unaryOp("Softmax", value);
+  }
+
   public Output resizeBilinear(Output images, Output size) {
     return binaryOp("ResizeBilinear", images, size);
   }
