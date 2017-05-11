@@ -23,11 +23,11 @@ public abstract class GraphTask implements AutoCloseable {
   }
 
   public static void execute(GraphTask task) {
-    task.run();
+    task.task();
     task.close();
   }
 
-  public abstract void run();
+  public abstract void task();
 
   public Session session() {
     if (session == null) {

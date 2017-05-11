@@ -13,7 +13,7 @@ import tensorflow.GraphTask;
 public class TensorFlowMain {
   public static void main(String[] args) throws Exception {
     execute(new GraphTask() {
-      public void run() {
+      public void task() {
         Output c1 = constant("Const1", new int[] { 1, 2, 3 });
         Output c2 = constant("Const2", new int[] { 2, 4, 8 });
         Output sum = add(c1, c2);
