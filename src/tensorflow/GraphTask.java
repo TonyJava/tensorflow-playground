@@ -1,5 +1,8 @@
 package tensorflow;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.tensorflow.DataType;
 import org.tensorflow.Graph;
 import org.tensorflow.Output;
@@ -7,19 +10,35 @@ import org.tensorflow.Session;
 import org.tensorflow.Shape;
 import org.tensorflow.Tensor;
 
-public class GraphWrapper implements AutoCloseable {
+public abstract class GraphTask implements AutoCloseable {
   private final Graph graph;
+  private Session session;
+  private final List<AutoCloseable> closeables;
 
-  public GraphWrapper() {
-    this(new Graph());
+  public GraphTask() {
+    this.graph = new Graph();
+    this.closeables = new ArrayList<>();
+    this.closeables.add(graph);
   }
 
-  public GraphWrapper(Graph graph) {
-    this.graph = graph;
+  public static void execute(GraphTask task) {
+    task.run();
+    task.close();
   }
 
-  public Session newSession() {
-    return new Session(graph);
+  public abstract void run();
+
+  public Session session() {
+    if (session == null) {
+      session = new Session(graph);
+    }
+    return session;
+  }
+
+  public Tensor tensor(Object object) {
+    Tensor tensor = Tensor.create(object);
+    closeables.add(tensor);
+    return tensor;
   }
 
   public Output add(Output value1, Output value2) {
@@ -126,6 +145,12 @@ public class GraphWrapper implements AutoCloseable {
   }
 
   public void close() {
-    graph.close();
+    for (int i = closeables.size() - 1; 0 <= i; i--) {
+      try {
+        closeables.get(i).close();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
   }
 }
