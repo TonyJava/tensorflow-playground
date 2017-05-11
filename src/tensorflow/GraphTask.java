@@ -120,7 +120,7 @@ public abstract class GraphTask implements AutoCloseable {
 
   public Output assign(Output variable, Output value) {
     return graph
-        .opBuilder("Assign", "assign->" + variable.op().name())
+        .opBuilder("Assign", "assign/" + variable.op().name())
         .addInput(variable)
         .addInput(value)
         .build()
