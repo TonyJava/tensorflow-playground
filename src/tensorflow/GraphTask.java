@@ -15,11 +15,13 @@ public abstract class GraphTask implements AutoCloseable {
   private final Graph graph;
   private Session session;
   private final List<AutoCloseable> closeables;
+  private int nameCount;
 
   public GraphTask() {
     this.graph = new Graph();
     this.closeables = new ArrayList<>();
     this.closeables.add(graph);
+    this.nameCount = 0;
   }
 
   public static void execute(GraphTask task) {
@@ -120,10 +122,18 @@ public abstract class GraphTask implements AutoCloseable {
         .output(0);
   }
 
+  public Output constant(Object value) {
+    return constant("const" + nextName(), value);
+  }
+
   public Output constant(String name, Object value) {
     try (Tensor tensor = Tensor.create(value)) {
       return constant(name, tensor);
     }
+  }
+
+  public Output constant(Tensor tensor) {
+    return constant("const" + nextName(), tensor);
   }
 
   private Output constant(String name, Tensor tensor) {
@@ -177,7 +187,7 @@ public abstract class GraphTask implements AutoCloseable {
 
   private Output binaryOp(String type, Output input1, Output input2) {
     return graph
-        .opBuilder(type, type)
+        .opBuilder(type, "op" + nextName())
         .addInput(input1)
         .addInput(input2)
         .build()
@@ -186,10 +196,14 @@ public abstract class GraphTask implements AutoCloseable {
 
   private Output unaryOp(String type, Output input) {
     return graph
-        .opBuilder(type, type)
+        .opBuilder(type, "op" + nextName())
         .addInput(input)
         .build()
         .output(0);
+  }
+
+  private String nextName() {
+    return Integer.toString(nameCount++);
   }
 
   public void close() {
