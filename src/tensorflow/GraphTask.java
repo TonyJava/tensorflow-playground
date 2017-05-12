@@ -122,6 +122,10 @@ public abstract class GraphTask implements AutoCloseable {
         .output(0);
   }
 
+  public Output constantIntArray(int... array) {
+    return constant(array);
+  }
+
   public Output constant(Object value) {
     return constant("const" + nextName(), value);
   }
