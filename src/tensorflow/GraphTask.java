@@ -32,6 +32,7 @@ public abstract class GraphTask implements AutoCloseable {
   public Session session() {
     if (session == null) {
       session = new Session(graph);
+      closeables.add(session);
     }
     return session;
   }
