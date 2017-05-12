@@ -67,8 +67,24 @@ public abstract class GraphTask implements AutoCloseable {
     return binaryOp("Div", value1, value2);
   }
 
+  public Output negative(Output value) {
+    return unaryOp("Neg", value);
+  }
+
   public Output square(Output value) {
     return unaryOp("Square", value);
+  }
+
+  public Output log(Output value) {
+    return unaryOp("Log", value);
+  }
+
+  public Output reduceSum(Output inputTensor, Output reductionIndices) {
+    return binaryOp("Sum", inputTensor, reductionIndices);
+  }
+
+  public Output reduceMean(Output inputTensor, Output reductionIndices) {
+    return binaryOp("Mean", inputTensor, reductionIndices);
   }
 
   public Output matMul(Output value1, Output value2) {
